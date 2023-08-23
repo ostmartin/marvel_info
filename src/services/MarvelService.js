@@ -19,10 +19,10 @@ export default class MarvelService {
 
     getCharacter = async (id) => {
         const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
-        return this._transformCharecter(res.data.results[0]);
+        return this._transformCharacter(res.data.results[0]);
     }
 
-    _transformCharecter = (char) => {
+    _transformCharacter = (char) => {
         let description = char.description;
 
         if (description.length <= 0) {
