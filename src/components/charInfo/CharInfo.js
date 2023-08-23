@@ -42,7 +42,7 @@ const CharInfo = () => {
                     Amazing-Spider-Man: Worldwide Vol. 8 (Trade Paperback)
                 </li>
                 <li className="char__comics-item">
-                    Asgardians Of The Galaxy Vol. 2: War Of The Realms (Trade Paperback)
+                    Guardians Of The Galaxy Vol. 2: War Of The Realms (Trade Paperback)
                 </li>
                 <li className="char__comics-item">
                     Vengeance (2011) #4
