@@ -8,13 +8,13 @@ export default class MarvelService {
         if (!res.ok) {
             throw new Error(`Could not fetch ${url}, status: ${res.state}`);
         }
-
+        
         return await res.json();
     }
 
     getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
-        return res.data.results.map(this._transformCharecter);
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=215&${this._apiKey}`);
+        return await res.data.results.map(this._transformCharacter);
     }
 
     getCharacter = async (id) => {
@@ -34,6 +34,7 @@ export default class MarvelService {
         }
 
         return {
+            id: char.id,
             name: char.name,
             description: description,
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
