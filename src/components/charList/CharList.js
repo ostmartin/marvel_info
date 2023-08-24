@@ -29,13 +29,8 @@ class CharList extends Component {
                 <ul className="char__grid">
                     {this.state.charList.map(char => {
                         const {name, thumbnail, id} = char;
-                        let imageStyle = {};
-
-                        if(/image_not_available/gi.test(thumbnail)) {
-                            imageStyle.objectFit = 'unset';
-                        } else {
-                            imageStyle.objectFit = 'fill';
-                        }
+                        
+                        const imageStyle = this.marvelService.checkAvailableImage(thumbnail);
 
                         return (
                             <li key={id} className="char__item">

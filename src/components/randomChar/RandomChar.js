@@ -93,13 +93,10 @@ export default class RandomChar extends Component{
 }
 
 const View = ({char}) => {
+    const marvelService = new MarvelService();
     const {name, description, homepage, wiki, thumbnail} = char;
 
-    let imageStyle = {};
-
-    if(/image_not_available/gi.test(thumbnail)) {
-        imageStyle.objectFit = 'unset';
-    }
+    const imageStyle = marvelService.checkAvailableImage(thumbnail);
 
     return (
         <div className="randomchar__block">

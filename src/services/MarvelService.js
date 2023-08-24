@@ -42,4 +42,16 @@ export default class MarvelService {
             wiki: char.urls[1].url
         }
     }
+
+    checkAvailableImage = (path) => {
+        let imageStyle = {};
+
+        if(/image_not_available/gi.test(path)) {
+            imageStyle.objectFit = 'unset';
+        } else {
+            imageStyle.objectFit = 'fill';
+        }
+
+        return imageStyle;
+    }
 }
