@@ -44,21 +44,18 @@ export default class RandomChar extends Component{
 
     updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-
+        this.onCharLoading();
         this.marvelService
             .getCharacter(id)
             .then(this.onCharLoaded)
             .catch(this.onError);
     }
 
-    onUpdateClick = () => {
-        this.setState(state => {
-            return {
+    onCharLoading = () => {
+        this.setState({
                 loading: true,
                 error: false
-            }
-        })
-        this.updateChar()
+            })
     }
 
     render() {
@@ -81,7 +78,7 @@ export default class RandomChar extends Component{
                         Or choose another one
                     </p>
                     <button className="button button__main"
-                            onClick={this.onUpdateClick}
+                            onClick={this.updateChar}
                             >
                         <div className="inner">try it</div>
                     </button>

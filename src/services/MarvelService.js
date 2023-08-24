@@ -3,17 +3,17 @@ export default class MarvelService {
     _apiKey = 'apikey=df45cf660f835fae11e3961d7b9575b8';
 
     getResource = async(url) => {
-        let res = await fetch(url);
+            let res = await fetch(url);
         
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.state}`);
-        }
-        
-        return await res.json();
+            if (!res.ok) {
+                throw new Error(`Could not fetch ${url}, status: ${res.state}`);
+            }
+            
+            return await res.json();
     }
 
     getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=215&${this._apiKey}`);
+        const res = await this.getResource(`${this._apiBase}characters?limit=15&offset=600&${this._apiKey}`);
         return await res.data.results.map(this._transformCharacter);
     }
 
@@ -44,12 +44,12 @@ export default class MarvelService {
     }
 
     checkAvailableImage = (path) => {
-        let imageStyle = {};
+        let imageStyle = {
+            objectFit : 'fill'
+        };
 
         if(/image_not_available/gi.test(path)) {
             imageStyle.objectFit = 'unset';
-        } else {
-            imageStyle.objectFit = 'fill';
         }
 
         return imageStyle;
