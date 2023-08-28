@@ -4,7 +4,7 @@ export default class MarvelService {
 
     getResource = async(url) => {
             let res = await fetch(url);
-        
+
             if (!res.ok) {
                 throw new Error(`Could not fetch ${url}, status: ${res.state}`);
             }
@@ -13,7 +13,7 @@ export default class MarvelService {
     }
 
     getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=15&offset=600&${this._apiKey}`);
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=215&${this._apiKey}`);
         return await res.data.results.map(this._transformCharacter);
     }
 
@@ -39,7 +39,8 @@ export default class MarvelService {
             description: description,
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
             homepage: char.urls[0].url,
-            wiki: char.urls[1].url
+            wiki: char.urls[1].url,
+            comics: char.comics.items
         }
     }
 

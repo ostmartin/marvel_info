@@ -14,36 +14,35 @@ class CharList extends Component {
 
     marvelService = new MarvelService();
     
-    // componentDidMount() {
-    //     this.marvelService.getAllCharacters()
-    //         .then(data => {
-    //             console.log(data);
-    //             this.onCharListLoaded(data);
-    //         })
-    //         .catch(this.onError)
-    // }
-
-    // onCharListLoaded = (charList) => {
-    //     this.setState({
-    //         charList,
-    //         loading: false
-    //     })
-    // }
-
     componentDidMount() {
-        this.updateCharList();
+        this.marvelService.getAllCharacters()
+            .then(data => {
+                this.onCharListLoaded(data);
+            })
+            .catch(this.onError)
     }
 
-    updateCharList = () => {
-        this.marvelService.getAllCharacters()
-            .then(charList => {
-                this.setState({
-                        charList,
-                        loading: false
-                    })
-            })
-            .catch(this.onError);
+    onCharListLoaded = (charList) => {
+        this.setState({
+            charList,
+            loading: false
+        })
     }
+
+    // componentDidMount() {
+    //     this.updateCharList();
+    // }
+
+    // updateCharList = () => {
+    //     this.marvelService.getAllCharacters()
+    //         .then(charList => {
+    //             this.setState({
+    //                     charList,
+    //                     loading: false
+    //                 })
+    //         })
+    //         .catch(this.onError);
+    // }
 
     onError = () => {
         this.setState({
@@ -59,7 +58,9 @@ class CharList extends Component {
             const imageStyle = this.marvelService.checkAvailableImage(thumbnail);
 
             return (
-                <li key={id} className="char__item">
+                <li key={id} 
+                    className="char__item"
+                    onClick={() => this.props.onCharSelected(id)}>
                     <img src={thumbnail} alt={name} style={imageStyle}/>
                     <div className="char__name">{name}</div>
                 </li>  
