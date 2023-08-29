@@ -21,6 +21,23 @@ class CharList extends Component {
         this.onRequest();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.offset !== prevState.offset) {
+            window.addEventListener('scroll', this.onScrollRequest);
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScrollRequest)
+    }
+
+    
+    onScrollRequest = () => {
+        if (((document.documentElement.clientHeight + window.scrollY) >= document.documentElement.scrollHeight)) {
+            this.onRequest(this.state.offset)
+        }
+    }
+
     onRequest = (offset) => {
         this.onCharListLoading();
         this.marvelService.getAllCharacters(offset)
