@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import MarvelService from '../../services/MarvelService';
@@ -32,10 +33,9 @@ class CharList extends Component {
     componentWillUnmount() {
         window.removeEventListener('scroll', this.onScrollRequest)
     }
-
     
     onScrollRequest = () => {
-        if (((document.documentElement.clientHeight + window.scrollY) >= document.documentElement.scrollHeight)) {
+        if (((document.documentElement.clientHeight + window.scrollY) >= document.documentElement.scrollHeight - 1)) {
             this.onRequest(this.state.offset)
         }
     }
@@ -91,16 +91,43 @@ class CharList extends Component {
         })
     }
 
+    // itemsRef = [];
+
+    // setRef = (ref) => {
+    //     this.itemsRef.push(ref)
+    // }
+
+    // focusOnItem = (id) => {
+    //     this.itemsRef.forEach(item => item.classList.remove('char__item_selected'));
+    //     this.itemsRef[id].classList.add('char__item_selected');
+    //     this.itemsRef[id].focus()
+    // }
+
     renderItems = (arr) => {
-        const items = arr.map(char => {
+        const items = arr.map((char, i) => {
             const {name, thumbnail, id} = char;
             
             const imageStyle = this.marvelService.checkAvailableImage(thumbnail);
 
             return (
-                <li key={id} 
+                <li key={id}
+                    // ref={this.setRef}
+                    tabIndex={0}
                     className="char__item"
-                    onClick={() => this.props.onCharSelected(id)}>
+                    // onClick={() => {
+                    //         this.props.onCharSelected(id);
+                    //         this.focusOnItem(i)
+                    //     }}
+                    onFocus={() => {
+                        this.props.onCharSelected(id);
+                    }}
+                    // onKeyPress={(e) => {
+                    //     if (e.key === ' ' || e.key === "Enter") {
+                    //         this.props.onCharSelected(id);
+                    //         this.focusOnItem(i);
+                    //     }
+                    // }}
+                    >
                     <img src={thumbnail} alt={name} style={imageStyle}/>
                     <div className="char__name">{name}</div>
                 </li>  
