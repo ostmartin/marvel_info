@@ -22,20 +22,19 @@ const CharList = ({onCharSelected}) => {
         onRequest();
     }, []);
 
-    // useEffect(() => {
-    //     onRequest();
-    //     const onScrollRequest = () => {
-    //         if ((document.documentElement.clientHeight + window.scrollY) >= document.documentElement.scrollHeight - 1) {
-    //             onRequest(initState.offset)
-    //         }
-    //     }
+    useEffect(() => {
+        const onScrollRequest = () => {
+            if ((document.documentElement.clientHeight + window.scrollY) === document.documentElement.scrollHeight) {
+                onRequest(initState.offset)
+            }
+        }
         
-    //     window.addEventListener('scroll', onScrollRequest);
+        window.addEventListener('scroll', onScrollRequest);
         
-    //     return () => {
-    //         window.removeEventListener('scroll', onScrollRequest)
-    //     };
-    // }, [initState.offset])
+        return () => {
+            window.removeEventListener('scroll', onScrollRequest)
+        };
+    }, [initState.offset])
 
     const marvelService = new MarvelService();
 
@@ -86,8 +85,8 @@ const CharList = ({onCharSelected}) => {
 
     const focusOnItem = (id) => {
         itemsRef.current.forEach(item => item.classList.remove('char__item_selected'));
-        itemsRef[id].current.classList.add('char__item_selected');
-        itemsRef[id].current.focus()
+        itemsRef.current[id].classList.add('char__item_selected');
+        itemsRef.current[id].focus()
     }
 
     const renderItems = (arr) => {
