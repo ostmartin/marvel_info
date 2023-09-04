@@ -30,24 +30,25 @@ const Characters = ({onCharSelected, charId}) => {
 
 const App = () => {
     const [selectedChar, setSelectedChar] = useState(null);
-    const [page, setPage] = useState('chars');
+    // const [page, setPage] = useState('chars');
 
     const onCharSelected = (id) => {
         setSelectedChar(id)
     }
 
-    const onPageSelected = (title) => {
-        setPage(title)
-    }
+    // const onPageSelected = (title) => {
+    //     setPage(title)
+    // }
 
     return (
         <div className="app">
-            <AppHeader onPageSelected={onPageSelected}/>
+            <AppHeader/>
             <main>
                 <AppBanner/>
                 <img className="bg-decoration" src={decoration} alt="vision"/>
                 <ErrorBoundary>
-                    {page === 'chars' ? <Characters onCharSelected={onCharSelected} charId={selectedChar}/> : <ComicsList/>}
+                    <Characters onCharSelected={onCharSelected} charId={selectedChar}/>
+                    {/* <ComicsList/> */}
                 </ErrorBoundary>
             </main>
         </div>

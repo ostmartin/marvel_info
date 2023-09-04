@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useTransition } from 'react';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -9,17 +9,10 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import './charList.scss';
 
 const CharList = ({onCharSelected}) => {
-    const [initState, setInitState] = useState({
-        charList: [],
-        newItemsLoading: false,
-        offset: 215,
-        charEnded: false
-    })
-
     const [charList, setCharList] = useState([]);
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(215);
-    const [charEnded, SetCharEnded] = useState(false);
+    const [charEnded, setCharEnded] = useState(false);
 
     useEffect(() => {
         onRequest(offset, true);
@@ -27,17 +20,18 @@ const CharList = ({onCharSelected}) => {
 
     // useEffect(() => {
     //     const onScrollRequest = () => {
-    //         if ((document.documentElement.clientHeight + window.scrollY) === document.documentElement.scrollHeight) {
-    //             onRequest(initState.offset)
+    //         if((document.documentElement.scrollHeight - (window.innerHeight + document.documentElement.scrollTop)) <= 1) {
+    //             onRequest(offset, false);
     //         }
     //     }
+    //     console.log('load')
         
     //     window.addEventListener('scroll', onScrollRequest);
         
     //     return () => {
     //         window.removeEventListener('scroll', onScrollRequest)
     //     };
-    // }, [initState.offset])
+    // }, [])
 
     const {loading, error, getAllCharacters, checkAvailableImage} = useMarvelService();
 
@@ -55,9 +49,9 @@ const CharList = ({onCharSelected}) => {
         }
 
         setCharList(charList => [...charList, ...newCharList]);
-        setNewItemsLoading(false);
         setOffset(offset => offset + 9);
-        SetCharEnded(ended);
+        setNewItemsLoading(false);
+        setCharEnded(ended);
     }
 
     const itemsRef = useRef([]);
