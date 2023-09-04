@@ -1,29 +1,23 @@
-export default class MarvelService {
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-    _apiKey = 'apikey=df45cf660f835fae11e3961d7b9575b8';
-    _baseOffset = 215;
+import { useHttp } from "../hooks/http.hook";
 
-    getResource = async(url) => {
-            let res = await fetch(url);
+const useMarvelService = () => {
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+    const _apiKey = 'apikey=df45cf660f835fae11e3961d7b9575b8';
+    const _baseOffset = 215;
 
-            if (!res.ok) {
-                throw new Error(`Could not fetch ${url}, status: ${res.state}`);
-            }
-            
-            return await res.json();
+    const {loading, request, error, clearError} = useHttp();
+
+    const getAllCharacters = async (offset = _baseOffset) => {
+        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+        return await res.data.results.map(_transformCharacter);
     }
 
-    getAllCharacters = async (offset = this._baseOffset) => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
-        return await res.data.results.map(this._transformCharacter);
+    const getCharacter = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        return _transformCharacter(res.data.results[0]);
     }
 
-    getCharacter = async (id) => {
-        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
-        return this._transformCharacter(res.data.results[0]);
-    }
-
-    _transformCharacter = (char) => {
+    const _transformCharacter = (char) => {
         let description = char.description;
 
         if (description.length <= 0) {
@@ -45,7 +39,7 @@ export default class MarvelService {
         }
     }
 
-    checkAvailableImage = (path) => {
+    const checkAvailableImage = (path) => {
         let imageStyle = {
             objectFit : 'fill'
         };
@@ -56,4 +50,8 @@ export default class MarvelService {
 
         return imageStyle;
     }
+
+    return {loading, error, getAllCharacters, getCharacter, checkAvailableImage, clearError}
 }
+
+export default useMarvelService;

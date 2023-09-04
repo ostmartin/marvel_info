@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import LoadingSpinner from '../spinner/LoadingSpinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
@@ -10,39 +10,21 @@ import './charInfo.scss';
 
 const CharInfo = ({charId}) =>{
     const [char, setChar] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
 
-    const marvelService = new MarvelService();
+    const {loading, error, getCharacter, clearError} = useMarvelService();
 
     useEffect(() => {
         updateChar();
     }, [charId]);
 
-    const onCharLoaded = (char) => {
-        setChar(char);
-        setLoading(false);
-    }
-
-    const onError = () => {
-        setLoading(false);
-        setError(false);
-    }
-
-    const onCharLoading = () => {
-            setLoading(true);
-            setError(false);
-    }
-
     const updateChar = () => {
         if (!charId) {
             return;
         }
-
-        onCharLoading();
-        marvelService.getCharacter(charId)
-                            .then(onCharLoaded)
-                            .catch(onError)
+        clearError();
+        
+        getCharacter(charId)
+            .then(setChar);
     }
 
     const skeleton =  char || loading || error ? null : <Skeleton/>;
@@ -62,8 +44,8 @@ const CharInfo = ({charId}) =>{
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki, comics} = char;
-    const marvelService = new MarvelService();
-    const imageStyle = marvelService.checkAvailableImage(thumbnail);
+    const {checkAvailableImage} = useMarvelService();
+    const imageStyle = checkAvailableImage(thumbnail);
     const comicsList = comics.map((item, i) => {
         if (i > 9) {
             return;

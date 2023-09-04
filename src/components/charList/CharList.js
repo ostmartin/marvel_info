@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import LoadingSpinner from '../spinner/LoadingSpinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
@@ -11,45 +11,41 @@ import './charList.scss';
 const CharList = ({onCharSelected}) => {
     const [initState, setInitState] = useState({
         charList: [],
-        loading: true,
-        error: false,
         newItemsLoading: false,
         offset: 215,
         charEnded: false
     })
 
+    const [charList, setCharList] = useState([]);
+    const [newItemsLoading, setNewItemsLoading] = useState(false);
+    const [offset, setOffset] = useState(215);
+    const [charEnded, SetCharEnded] = useState(false);
+
     useEffect(() => {
-        onRequest();
+        onRequest(offset, true);
     }, []);
 
-    useEffect(() => {
-        const onScrollRequest = () => {
-            if ((document.documentElement.clientHeight + window.scrollY) === document.documentElement.scrollHeight) {
-                onRequest(initState.offset)
-            }
-        }
+    // useEffect(() => {
+    //     const onScrollRequest = () => {
+    //         if ((document.documentElement.clientHeight + window.scrollY) === document.documentElement.scrollHeight) {
+    //             onRequest(initState.offset)
+    //         }
+    //     }
         
-        window.addEventListener('scroll', onScrollRequest);
+    //     window.addEventListener('scroll', onScrollRequest);
         
-        return () => {
-            window.removeEventListener('scroll', onScrollRequest)
-        };
-    }, [initState.offset])
+    //     return () => {
+    //         window.removeEventListener('scroll', onScrollRequest)
+    //     };
+    // }, [initState.offset])
 
-    const marvelService = new MarvelService();
+    const {loading, error, getAllCharacters, checkAvailableImage} = useMarvelService();
 
-    const onRequest = (offset) => {
-        onCharListLoading();
-        marvelService.getAllCharacters(offset)
-                            .then(onCharListLoaded)
-                            .catch(onError);
-    }
+    const onRequest = (offset, initial) => {
+        initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
 
-    const onCharListLoading = () => {
-        setInitState({
-            ...initState,
-            newItemsLoading: true
-        })
+        getAllCharacters(offset)
+            .then(onCharListLoaded);
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -57,28 +53,11 @@ const CharList = ({onCharSelected}) => {
         if (newCharList.length < 9) {
             ended = true;
         }
-        
-        setInitState(initState => ({
-            ...initState,
-            charList: [...initState.charList, ...newCharList],
-            loading: false,
-            newItemsLoading: false,
-            offset: initState.offset + 9,
-            charEnded: ended
-        }))
-    }
 
-    const onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
-
-        setInitState({
-            ...initState,
-            loading: false,
-            error: true
-        })
+        setCharList(charList => [...charList, ...newCharList]);
+        setNewItemsLoading(false);
+        setOffset(offset => offset + 9);
+        SetCharEnded(ended);
     }
 
     const itemsRef = useRef([]);
@@ -93,7 +72,7 @@ const CharList = ({onCharSelected}) => {
         const items = arr.map((char, i) => {
             const {name, thumbnail, id} = char;
             
-            const imageStyle = marvelService.checkAvailableImage(thumbnail);
+            const imageStyle = checkAvailableImage(thumbnail);
 
             return (
                 <li key={id}
@@ -127,23 +106,21 @@ const CharList = ({onCharSelected}) => {
         )
     }
 
-    const {charList, loading, error, offset, newItemsLoading, charEnded} = initState;
-
     const itemsList = renderItems(charList);
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <LoadingSpinner/> : null;
-    const content = !(loading || error) ? itemsList : null;
+    const spinner = loading && !newItemsLoading ? <LoadingSpinner/> : null;
+    // const content = !(loading || error) ? itemsList : null;
     
     return (
         <div className="char__list">
-                {content}
+                {itemsList}
                 {spinner}
                 {errorMessage}
             <button className="button button__main button__long"
                     disabled={newItemsLoading}
                     style={{'display': charEnded ? 'none' : 'block'}}
-                    onClick={() => onRequest(offset)}>
+                    onClick={() => onRequest(offset, false)}>
                 <div className="inner">Load More</div>
             </button>
         </div>

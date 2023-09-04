@@ -5,32 +5,50 @@ import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import ComicsList from "../comicsList/ComicsList";
+import AppBanner from "../appBanner/AppBanner";
 
 import decoration from '../../resources/img/vision.png';
 
+const Characters = ({onCharSelected, charId}) => {
+    return (
+        <>
+            <ErrorBoundary>
+                <RandomChar/>
+            </ErrorBoundary>
+            <div className="char__content">
+                <ErrorBoundary>
+                    <CharList onCharSelected={onCharSelected}/>
+                </ErrorBoundary>
+                <ErrorBoundary>
+                    <CharInfo charId={charId}/>
+                </ErrorBoundary>
+            </div>
+        </>
+    )
+}
+
 const App = () => {
     const [selectedChar, setSelectedChar] = useState(null);
+    const [page, setPage] = useState('chars');
 
     const onCharSelected = (id) => {
         setSelectedChar(id)
     }
 
+    const onPageSelected = (title) => {
+        setPage(title)
+    }
+
     return (
         <div className="app">
-            <AppHeader/>
+            <AppHeader onPageSelected={onPageSelected}/>
             <main>
-                <ErrorBoundary>
-                    <RandomChar/>
-                </ErrorBoundary>
-                <div className="char__content">
-                    <ErrorBoundary>
-                        <CharList onCharSelected={onCharSelected}/>
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                        <CharInfo charId={selectedChar}/>
-                    </ErrorBoundary>
-                </div>
+                <AppBanner/>
                 <img className="bg-decoration" src={decoration} alt="vision"/>
+                <ErrorBoundary>
+                    {page === 'chars' ? <Characters onCharSelected={onCharSelected} charId={selectedChar}/> : <ComicsList/>}
+                </ErrorBoundary>
             </main>
         </div>
     )
