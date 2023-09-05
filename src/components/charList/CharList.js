@@ -18,20 +18,20 @@ const CharList = ({onCharSelected}) => {
         onRequest(offset, true);
     }, []);
 
-    // useEffect(() => {
-    //     const onScrollRequest = () => {
-    //         if((document.documentElement.scrollHeight - (window.innerHeight + document.documentElement.scrollTop)) <= 1) {
-    //             onRequest(offset, false);
-    //         }
-    //     }
-    //     console.log('load')
+    useEffect(() => {
+        const onScrollRequest = () => {
+            if((document.documentElement.clientHeight + window.scrollY) >= document.documentElement.scrollHeight - 1 && !newItemsLoading) {
+                onRequest(offset, false);
+            }
+        }
+        console.log('load')
         
-    //     window.addEventListener('scroll', onScrollRequest);
+        window.addEventListener('scroll', onScrollRequest);
         
-    //     return () => {
-    //         window.removeEventListener('scroll', onScrollRequest)
-    //     };
-    // }, [])
+        return () => {
+            window.removeEventListener('scroll', onScrollRequest)
+        };
+    }, [newItemsLoading, offset])
 
     const {loading, error, getAllCharacters, checkAvailableImage} = useMarvelService();
 
