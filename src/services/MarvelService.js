@@ -17,9 +17,14 @@ const useMarvelService = () => {
         return await res.data.results.map(_transformComics);
     }
 
-    const getCharacter = async (id) => {
-        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
-        return _transformCharacter(res.data.results[0]);
+    const getSingleMarvelData = async (data, id) => {
+        const res = await request(`${_apiBase}${data}/${id}?${_apiKey}`);
+        
+        if (data === 'characters') {
+            return _transformCharacter(res.data.results[0]);
+        }
+
+        return _transformComics(res.data.results[0]);
     }
 
     const _transformCharacter = (char) => {
@@ -45,12 +50,13 @@ const useMarvelService = () => {
     }
 
     const _transformComics = (item) => {
-        const price = item.prices[0].price === 0 ? 'NOT AVAILABLE' : (item.prices[0].price + '$')
-
         return {
             id: item.id,
             title: item.title,
-            price: price,
+            description: item.description || "There is no description",
+            pageCount: item.pageCount ? `${item.pageCount} p.` : "No information about the number of pages", 
+            price: item.prices[0].price === 0 ? 'NOT AVAILABLE' : (item.prices[0].price + '$'),
+            language: item.textObjects.language || "en-us",
             thumbnail: item.thumbnail.path + '.' + item.thumbnail.extension,
             url: item.urls[0].url
         }
@@ -68,7 +74,7 @@ const useMarvelService = () => {
         return imageStyle;
     }
 
-    return {loading, error, getMarvelData, getCharacter, checkAvailableImage, clearError}
+    return {loading, error, getMarvelData, getSingleMarvelData, checkAvailableImage, clearError}
 }
 
 export default useMarvelService;
