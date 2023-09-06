@@ -7,9 +7,14 @@ const useMarvelService = () => {
 
     const {loading, request, error, clearError} = useHttp();
 
-    const getAllCharacters = async (offset = _baseOffset) => {
-        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
-        return await res.data.results.map(_transformCharacter);
+    const getMarvelData = async (data, limit, offset = _baseOffset) => {
+        const res = await request(`${_apiBase}${data}?limit=${limit}&offset=${offset}&${_apiKey}`);
+        
+        if (data === 'characters') {
+            return await res.data.results.map(_transformCharacter);
+        }
+
+        return await res.data.results.map(_transformComics);
     }
 
     const getCharacter = async (id) => {
@@ -39,6 +44,18 @@ const useMarvelService = () => {
         }
     }
 
+    const _transformComics = (item) => {
+        const price = item.prices[0].price === 0 ? 'NOT AVAILABLE' : (item.prices[0].price + '$')
+
+        return {
+            id: item.id,
+            title: item.title,
+            price: price,
+            thumbnail: item.thumbnail.path + '.' + item.thumbnail.extension,
+            url: item.urls[0].url
+        }
+    }
+
     const checkAvailableImage = (path) => {
         let imageStyle = {
             objectFit : 'fill'
@@ -51,7 +68,7 @@ const useMarvelService = () => {
         return imageStyle;
     }
 
-    return {loading, error, getAllCharacters, getCharacter, checkAvailableImage, clearError}
+    return {loading, error, getMarvelData, getCharacter, checkAvailableImage, clearError}
 }
 
 export default useMarvelService;
