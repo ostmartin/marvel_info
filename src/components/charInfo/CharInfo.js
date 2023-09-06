@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 
 import useMarvelService from '../../services/MarvelService';
 import LoadingSpinner from '../spinner/LoadingSpinner';
@@ -47,13 +48,16 @@ const View = ({char}) => {
     const {checkAvailableImage} = useMarvelService();
     const imageStyle = checkAvailableImage(thumbnail);
     const comicsList = comics.map((item, i) => {
+        const urlParts = item.resourceURI.split('/');
+        const id = urlParts[urlParts.length - 1];
+
         if (i > 9) {
             return;
         }
         return (
             <li key={i} className="char__comics-item">
-                    <a href={item.resourceURI}>{item.name}</a>
-                </li>
+                    <Link to={`/comics/${id}`}>{item.name}</Link>
+            </li>
         )
     })
 
