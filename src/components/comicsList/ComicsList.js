@@ -70,7 +70,7 @@ const ComicsList = () => {
                 {itemsList}
                 {spinner}
                 {errorMessage}
-                <button className="button button__main button__long"
+            <button className="button button__main button__long"
                     disabled={newItemsLoading}
                     style={{'display': comicsEnded ? 'none' : 'block'}}
                     onClick={() => onRequest(offset, false)}>

@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from 'react';
 
 import useMarvelService from '../../services/MarvelService';
@@ -24,6 +24,7 @@ const SingleComicPage = () => {
     }
 
     const errorMessage = error ? <ErrorMessage/> : null;
+    const goBackBtn = error ? <ErrorButton/> : null
     const spinner = loading ? <LoadingSpinner/> : null;
     const content = !(loading || error || !comic) ? <View comic={comic}/> : null;
 
@@ -31,6 +32,7 @@ const SingleComicPage = () => {
     return (
         <>
             {errorMessage}
+            {goBackBtn}
             {spinner}
             {content}
         </>
@@ -52,6 +54,28 @@ const View = ({comic}) => {
             </div>
             <Link to='/comics' className="single-comic__back">Back to all</Link>
         </div>
+    )
+}
+
+const ErrorButton = () => {
+    const history = useHistory();
+    
+    if (history.length <= 2) {
+        return (
+            <button className="button button__main button__long">
+                <div className="inner">
+                    <Link to='/comics'>
+                        Go Back
+                    </Link>
+                </div>
+            </button>
+        )
+    }
+
+    return (
+        <button className="button button__main button__long">
+            <div className="inner" onClick={() => history.goBack()}>Go Back</div>
+        </button>
     )
 }
 
