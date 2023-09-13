@@ -1,12 +1,27 @@
 import { useState, useEffect, useRef, useTransition } from 'react';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Transition, TransitionGroup } from 'react-transition-group';
 
 import useMarvelService from '../../services/MarvelService';
 import LoadingSpinner from '../spinner/LoadingSpinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './charList.scss';
+
+const duration = 500;
+
+const defaultStyle = {
+  transition: `opacity ${duration}ms ease-in-out`,
+  opacity: 0,
+}
+
+const transitionStyles = {
+  entering: { opacity: 1 },
+  entered:  { opacity: 1 },
+  exiting:  { opacity: 0 },
+  exited:  { opacity: 0 },
+};
 
 const CharList = ({onCharSelected}) => {
     const [charList, setCharList] = useState([]);
@@ -69,33 +84,47 @@ const CharList = ({onCharSelected}) => {
             const imageStyle = checkAvailableImage(thumbnail);
 
             return (
-                <li key={id}
-                    ref={el => itemsRef.current[i] = el}
-                    tabIndex={0}
-                    className="char__item"
-                    onClick={() => {
-                            onCharSelected(id);
-                            focusOnItem(i)
-                        }}
-                    // onFocus={() => {
-                    //     onCharSelected(id);
-                    // }}
-                    onKeyPress={(e) => {
-                        if (e.key === ' ' || e.key === "Enter") {
-                            onCharSelected(id);
-                            focusOnItem(i);
-                        }
-                    }}
-                    >
-                    <img src={thumbnail} alt={name} style={imageStyle}/>
-                    <div className="char__name">{name}</div>
-                </li>  
+                <Transition key={id}
+                            timeout={duration}
+                            mountOnEnter>
+                    {
+                        state => (
+                            <li ref={el => itemsRef.current[i] = el}
+                                tabIndex={0}
+                                className="char__item"
+                                onClick={() => {
+                                        onCharSelected(id);
+                                        focusOnItem(i)
+                                    }}
+                                // onFocus={() => {
+                                //     onCharSelected(id);
+                                // }}
+                                onKeyPress={(e) => {
+                                    if (e.key === ' ' || e.key === "Enter") {
+                                        onCharSelected(id);
+                                        focusOnItem(i);
+                                    }
+                                }}
+                                style={{
+                                    ...defaultStyle,
+                                    ...transitionStyles[state]
+                                }}
+                                >
+                                <img src={thumbnail} alt={name} style={imageStyle}/>
+                                <div className="char__name">{name}</div>
+                            </li>
+                        )
+                    }
+                </Transition>
             )
         })
 
         return (
-            <ul className="char__grid">
-                    {items}
+            
+                <ul className="char__grid">
+                    <TransitionGroup component={null}>
+                        {items}
+                    </TransitionGroup>
                 </ul>
         )
     }

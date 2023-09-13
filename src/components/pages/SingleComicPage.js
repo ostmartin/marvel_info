@@ -65,7 +65,7 @@ const ErrorButton = () => {
             <button className="button button__main button__long">
                 <div className="inner">
                     <Link to='/comics'>
-                        Go Back
+                        To comics list
                     </Link>
                 </div>
             </button>
