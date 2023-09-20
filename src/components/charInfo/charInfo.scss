@@ -1,12 +1,14 @@
 @import '../../style/variables.scss';
 
 .char {
-    &__info {
-        padding: 25px;
-        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
+    &__section{
         position: sticky;
         top: 1rem;
         z-index: 5;
+    }
+    &__info {
+        padding: 25px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
         background-color: #fff;
         &-name {
             font-weight: bold;
