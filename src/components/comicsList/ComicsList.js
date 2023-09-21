@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import useMarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import LoadingSpinner from "../spinner/LoadingSpinner";
+import AppBanner from "../appBanner/AppBanner";
 
 import './comicsList.scss';
 
@@ -44,7 +45,7 @@ const ComicsList = () => {
 
             return (
                 <li key={i} className="comics__item">
-                    <Link to={`/comics/${id}`}>
+                    <Link to={`/marvel_info/comics/${id}`}>
                         <img src={thumbnail} alt={title} className="comics__item-img"/>
                         <div className="comics__item-name">{title}</div>
                         <div className="comics__item-price">{price}</div>
@@ -66,17 +67,20 @@ const ComicsList = () => {
     const spinner = loading && !newItemsLoading ? <LoadingSpinner/> : null;
 
     return (
-        <div className="comics__list">
-                {itemsList}
-                {spinner}
-                {errorMessage}
-            <button className="button button__main button__long"
-                    disabled={newItemsLoading}
-                    style={{'display': comicsEnded ? 'none' : 'block'}}
-                    onClick={() => onRequest(offset, false)}>
-                <div className="inner">Load More</div>
-            </button>
-        </div>
+        <>
+            <AppBanner/>
+            <div className="comics__list">
+                    {itemsList}
+                    {spinner}
+                    {errorMessage}
+                <button className="button button__main button__long"
+                        disabled={newItemsLoading}
+                        style={{'display': comicsEnded ? 'none' : 'block'}}
+                        onClick={() => onRequest(offset, false)}>
+                    <div className="inner">Load More</div>
+                </button>
+            </div>
+        </>
     )
 }
 

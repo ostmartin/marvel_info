@@ -17,6 +17,10 @@ export const useHttp = () => {
             const data = await response.json();
 
             setloading(false);
+            
+            if (data.data.results.length === 0) {
+                throw new Error(`No matches found`);
+            }
 
             return data;
         } catch (error) {

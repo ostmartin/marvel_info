@@ -8,7 +8,7 @@ import LoadingSpinner from '../spinner/LoadingSpinner';
 const Page404 = lazy(() => import('../pages/page-404'));
 const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
-const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
+const SingleItemPage = lazy(() => import('../pages/SingleItemPage'));
 
 const App = () => {
 
@@ -22,11 +22,14 @@ const App = () => {
                             <Route exact path="/marvel_info">
                                 <MainPage/>
                             </Route>
-                            <Route exact path="/comics">
+                            <Route exact path="/marvel_info/comics">
                                 <ComicsPage/>
                             </Route>
-                            <Route exact path="/comics/:comicId">
-                                <SingleComicPage/>
+                            <Route exact path="/marvel_info/comics/:comicId">
+                                <SingleItemPage id={"comicId"} category={'comics'}/>
+                            </Route>
+                            <Route exact path="/marvel_info/characters/:charName">
+                                <SingleItemPage id={"charName"} category={'characters'}/>
                             </Route>
                             <Route path="*">
                                 <Page404/>
