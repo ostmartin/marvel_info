@@ -7,8 +7,8 @@ const ErrorGoBackButton = () => {
         return (
             <button className="button button__main button__long">
                 <div className="inner">
-                    <Link to='/marvel_info/comics'>
-                        To comics list
+                    <Link to='/marvel_info'>
+                        To main page
                     </Link>
                 </div>
             </button>

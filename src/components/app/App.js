@@ -26,7 +26,7 @@ const App = () => {
                                 <ComicsPage/>
                             </Route>
                             <Route exact path="/marvel_info/comics/:comicId">
-                                <SingleItemPage id={"comicId"} category={'comics'}/>
+                                <SingleItemPage id={"comicId"} category={'comic'}/>
                             </Route>
                             <Route exact path="/marvel_info/characters/:charName">
                                 <SingleItemPage id={"charName"} category={'characters'}/>

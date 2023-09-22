@@ -1,33 +1,39 @@
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import useMarvelService from '../../services/MarvelService';
-import { Formik, Form, Field, ErrorMessage} from "formik";
+import { Formik, Form, Field, ErrorMessage as FormikError} from "formik";
 import * as Yup from 'yup';
 
-import './findCharByName.scss';
+import useMarvelService from '../../services/MarvelService';
+
+import './searchCharPanel.scss';
+
+const setContent = (process, Component, data) => {
+    switch(process) {
+        case 'waiting':
+            return null;
+        case 'loading':
+            return null;
+        case 'success':
+            return <Component data={data} process={process}/>
+        case 'error':
+            return <Component data={data} process={process}/>;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
 
 const FindCharByName = () => {
     const [char, setChar] = useState(null);
-    // const [newLoading, setNewLoading] = useState(false);
-    const {findCharByName, loading, error, clearError} = useMarvelService();
+    const {findCharByName, clearError, process, setProcess} = useMarvelService();
     
     const charOnLoad = (name) => {
         clearError();
-        // setNewLoading(true);
         setChar(char => null)
 
         findCharByName(name)
             .then(data => setChar(char => data))
-            .catch(error => setChar(null));
+            .then(() => setProcess('success'));
 
-    }
-
-    let loaded;
-
-    if (!error & loading) {
-        loaded = null;
-    } else {
-        loaded = <View char={char} loading={loading} error={error} />
     }
 
     return (
@@ -51,11 +57,11 @@ const FindCharByName = () => {
                             placeholder='Enter name'
                             className='find__input'
                         />
-                        <button type='submit' className='button button__main'>
+                        <button type='submit' className='button button__main'disabled={process === 'loading'}>
                             <div className='inner'>Find</div>
                         </button>
-                        <ErrorMessage name='name' component='div' className='find__error'/>
-                        {loaded}
+                        <FormikError name='name' component='div' className='find__error'/>
+                        {setContent(process, View, char)}
                     </div>
                 </div>
             </Form>
@@ -63,24 +69,21 @@ const FindCharByName = () => {
     )
 }
 
-const View = ({char, loading, error}) => {
-    const text = char !== null & !loading ? `There is! Visit ${char.name} page?` : (!error ? null : 'The character was not found. Check the name and try again');
-    const classes = char !== null ? 'find__succes' : 'find__error'
-    
-    if (char === null) {
+const View = ({data, process}) => {    
+    if (!data || process === 'error') {
         return (
             <>
-                <div className={classes}>{text}</div>
+                <div className='find__error'>The character was not found. Check the name and try again</div>
+            </>
+        )
+    } else {
+        return (
+            <>
+                <div className='find__succes'>{`There is! Visit ${data.name} page?`}</div>
+                <ToPageButton name={data.name}/>
             </>
         )
     }
-
-    return (
-        <>
-            <div className={classes}>{text}</div>
-            <ToPageButton name={char.name}/>
-        </>
-    )
 }
 
 const ToPageButton = ({name}) => {

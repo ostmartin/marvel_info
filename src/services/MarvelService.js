@@ -5,7 +5,7 @@ const useMarvelService = () => {
     const _apiKey = 'apikey=df45cf660f835fae11e3961d7b9575b8';
     const _baseOffset = 215;
 
-    const {loading, request, error, clearError} = useHttp();
+    const {loading, request, error, process, clearError, setProcess} = useHttp();
 
     const getMarvelData = async (data, limit, offset = _baseOffset) => {
         const res = await request(`${_apiBase}${data}?limit=${limit}&offset=${offset}&${_apiKey}`);
@@ -80,7 +80,7 @@ const useMarvelService = () => {
         return imageStyle;
     }
 
-    return {loading, error, getMarvelData, getSingleMarvelData, checkAvailableImage, clearError, findCharByName}
+    return {process, getMarvelData, getSingleMarvelData, checkAvailableImage, clearError, findCharByName, setProcess}
 }
 
 export default useMarvelService;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useTransition } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Transition, TransitionGroup } from 'react-transition-group';
@@ -8,6 +8,21 @@ import LoadingSpinner from '../spinner/LoadingSpinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './charList.scss';
+
+const setContent = (process, Component, newLoading) => {
+    switch(process) {
+        case 'waiting':
+            return <LoadingSpinner/>;
+        case 'loading':
+            return newLoading ? <Component/> : <LoadingSpinner/>;
+        case 'success':
+            return <Component/>
+        case 'error':
+            return <ErrorMessage/>;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
 
 const duration = 500;
 
@@ -29,6 +44,8 @@ const CharList = ({onCharSelected}) => {
     const [offset, setOffset] = useState(215);
     const [charEnded, setCharEnded] = useState(false);
 
+    const {process, setProcess, getMarvelData, checkAvailableImage} = useMarvelService();
+
     useEffect(() => {
         onRequest(offset, true);
     }, []);
@@ -48,13 +65,12 @@ const CharList = ({onCharSelected}) => {
     //     };
     // }, [newItemsLoading, offset])
 
-    const {loading, error, getMarvelData, checkAvailableImage} = useMarvelService();
-
     const onRequest = (offset, initial) => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
 
         getMarvelData('characters', 9, offset)
-            .then(onCharListLoaded);
+            .then(onCharListLoaded)
+            .then(() => setProcess('success'));
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -120,7 +136,6 @@ const CharList = ({onCharSelected}) => {
         })
 
         return (
-            
                 <ul className="char__grid">
                     <TransitionGroup component={null}>
                         {items}
@@ -128,18 +143,10 @@ const CharList = ({onCharSelected}) => {
                 </ul>
         )
     }
-
-    const itemsList = renderItems(charList);
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemsLoading ? <LoadingSpinner/> : null;
-    // const content = !(loading || error) ? itemsList : null;
     
     return (
         <div className="char__list">
-                {itemsList}
-                {spinner}
-                {errorMessage}
+                {setContent(process, () => renderItems(charList), newItemsLoading)}
             <button className="button button__main button__long"
                     disabled={newItemsLoading}
                     style={{'display': charEnded ? 'none' : 'block'}}

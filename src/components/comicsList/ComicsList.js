@@ -8,13 +8,28 @@ import AppBanner from "../appBanner/AppBanner";
 
 import './comicsList.scss';
 
+const setContent = (process, Component, newLoading) => {
+    switch(process) {
+        case 'waiting':
+            return <LoadingSpinner/>;
+        case 'loading':
+            return newLoading ? <Component/> : <LoadingSpinner/>;
+        case 'success':
+            return <Component/>
+        case 'error':
+            return <ErrorMessage/>;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
+
 const ComicsList = () => {
     const [comicsList, setComicsList] = useState([]);
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [comicsEnded, setComicsEnded] = useState(false);
 
-    const {loading, error, getMarvelData} = useMarvelService();
+    const {process, setProcess, getMarvelData} = useMarvelService();
 
     useEffect(() => {
         onRequest(offset, true);
@@ -24,7 +39,8 @@ const ComicsList = () => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
 
         getMarvelData('comics', 8, offset)
-            .then(onComicsListLoaded);
+            .then(onComicsListLoaded)
+            .then(() => setProcess('success'));
     }
 
     const onComicsListLoaded = (newComicsList) => {
@@ -41,7 +57,7 @@ const ComicsList = () => {
 
     const renderItems = (arr) => {
         const items = arr.map((item, i) => {
-            const {title, price, url, thumbnail, id} = item;
+            const {title, price, thumbnail, id} = item;
 
             return (
                 <li key={i} className="comics__item">
@@ -61,18 +77,11 @@ const ComicsList = () => {
         )
     }
 
-    const itemsList = renderItems(comicsList);
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemsLoading ? <LoadingSpinner/> : null;
-
     return (
         <>
             <AppBanner/>
             <div className="comics__list">
-                    {itemsList}
-                    {spinner}
-                    {errorMessage}
+                    {setContent(process, () => renderItems(comicsList), newItemsLoading)}
                 <button className="button button__main button__long"
                         disabled={newItemsLoading}
                         style={{'display': comicsEnded ? 'none' : 'block'}}

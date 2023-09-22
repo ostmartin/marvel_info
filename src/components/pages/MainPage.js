@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
-import FindCharByName from "../findCharByName/FindCharByName";
+import FindCharByName from "../searchCharPanel/SearchCharPanel";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import decoration from '../../resources/img/vision.png';
@@ -36,7 +36,9 @@ const MainPage = () => {
                 <ErrorBoundary>
                     <div className="char__section">
                         <CharInfo charId={selectedChar}/>
-                        <FindCharByName/>
+                        <ErrorBoundary>
+                            <FindCharByName/>
+                        </ErrorBoundary>
                     </div>
                 </ErrorBoundary>
             </div>
