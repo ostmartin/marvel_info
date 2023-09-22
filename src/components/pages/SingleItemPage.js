@@ -1,5 +1,6 @@
 import { useParams, Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { Helmet } from "react-helmet";
 
 import useMarvelService from '../../services/MarvelService';
 import LoadingSpinner from '../spinner/LoadingSpinner';
@@ -51,6 +52,13 @@ const ViewComic = ({item}) => {
 
     return (
         <>
+            <Helmet>
+                <meta
+                    name="description"
+                    content={`Page of ${title}`}
+                />
+                <title>{title}</title>
+            </Helmet>
             <AppBanner/>
             <div className="single-item">
                 <img src={thumbnail} alt={title} className="single-item__img"/>
@@ -72,6 +80,13 @@ const ViewCharacter = ({item}) => {
 
     return (
         <>
+            <Helmet>
+                <meta
+                    name="description"
+                    content={`Page of ${name}`}
+                />
+                <title>{name}</title>
+            </Helmet>
             <AppBanner/>
             <div className="single-item">
                 <img src={thumbnail} alt={name} className="single-item__img"/>

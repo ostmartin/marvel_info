@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import useMarvelService from '../../services/MarvelService';
-import { Formik, Form, Field, ErrorMessage, useField} from "formik";
+import { Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from 'yup';
 
 import './findCharByName.scss';
 
 const FindCharByName = () => {
     const [char, setChar] = useState(null);
-    const [newLoading, setNewLoading] = useState(false);
+    // const [newLoading, setNewLoading] = useState(false);
     const {findCharByName, loading, error, clearError} = useMarvelService();
     
     const charOnLoad = (name) => {
         clearError();
-        setNewLoading(true);
+        // setNewLoading(true);
         setChar(char => null)
 
         findCharByName(name)
@@ -24,7 +24,7 @@ const FindCharByName = () => {
 
     let loaded;
 
-    if (!error & !newLoading & !loading) {
+    if (!error & loading) {
         loaded = null;
     } else {
         loaded = <View char={char} loading={loading} error={error} />
