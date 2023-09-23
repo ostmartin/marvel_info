@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -33,6 +33,7 @@ const CharList = ({onCharSelected}) => {
 
     useEffect(() => {
         onRequest(offset, true);
+        // eslint-disable-next-line
     }, []);
 
     // useEffect(() => {
@@ -85,7 +86,8 @@ const CharList = ({onCharSelected}) => {
             const imageStyle = checkAvailableImage(thumbnail);
 
             return (
-                <li ref={el => itemsRef.current[i] = el}
+                <li key={i}
+                    ref={el => itemsRef.current[i] = el}
                     tabIndex={0}
                     className="char__item"
                     onClick={() => {
@@ -114,10 +116,12 @@ const CharList = ({onCharSelected}) => {
                 </ul>
         )
     }
+
+    const elems = useMemo(() => setContent(process, () => renderItems(charList), newItemsLoading), [charList])
     
     return (
         <div className="char__list">
-                {setContent(process, () => renderItems(charList), newItemsLoading)}
+                {elems}
             <button className="button button__main button__long"
                     disabled={newItemsLoading}
                     style={{'display': charEnded ? 'none' : 'block'}}
