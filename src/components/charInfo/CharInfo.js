@@ -47,7 +47,7 @@ const View = ({data}) => {
         }
         return (
             <li key={i} className="char__comics-item">
-                    <Link to={`/comics/${id}`}>{item.name}</Link>
+                    <Link to={`/marvel_info/comics/${id}`}>{item.name}</Link>
             </li>
         )
     })
